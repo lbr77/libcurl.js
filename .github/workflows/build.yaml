@@ -1,6 +1,8 @@
 name: build
 run-name: Build libcurl.js
-on: [push]
+on: 
+  push:
+  workflow_dispatch: 
 
 jobs:
   build:
