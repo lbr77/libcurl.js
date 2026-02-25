@@ -32,3 +32,11 @@ void tls_socket_set_options(CURL* http_handle, int verbose) {
   curl_easy_setopt(http_handle, CURLOPT_SSL_ENABLE_ALPN, 0L);
   curl_easy_setopt(http_handle, CURLOPT_VERBOSE, (long) verbose);
 }
+
+void tls_socket_set_options_insecure(CURL* http_handle, int verbose, int insecure) {
+  tls_socket_set_options(http_handle, verbose);
+  if (insecure) {
+    curl_easy_setopt(http_handle, CURLOPT_SSL_VERIFYPEER, 0L);
+    curl_easy_setopt(http_handle, CURLOPT_SSL_VERIFYHOST, 0L);
+  }
+}

@@ -10,6 +10,7 @@ session_cleanup
 request_cleanup
 create_request
 request_set_proxy
+request_set_insecure
 get_version
 get_cacert
 get_error_str
@@ -30,6 +31,7 @@ get_result_bytes_left
 get_result_is_text
 
 tls_socket_set_options
+tls_socket_set_options_insecure
 recv_from_socket
 send_to_socket
 

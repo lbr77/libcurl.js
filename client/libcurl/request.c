@@ -81,3 +81,10 @@ void finish_request(CURLMsg *curl_msg) {
 void request_set_proxy(CURL* http_handle, const char* proxy_url) {
   curl_easy_setopt(http_handle, CURLOPT_PROXY, proxy_url);
 }
+
+void request_set_insecure(CURL* http_handle, int insecure) {
+  if (insecure) {
+    curl_easy_setopt(http_handle, CURLOPT_SSL_VERIFYPEER, 0L);
+    curl_easy_setopt(http_handle, CURLOPT_SSL_VERIFYHOST, 0L);
+  }
+}

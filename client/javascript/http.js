@@ -91,6 +91,9 @@ class HTTPSession extends CurlSession {
       if (params.proxy) {
         c_func_str(_request_set_proxy, [http_handle, params.proxy]);
       }
+      if (params.insecure) {
+        c_func(_request_set_insecure, [http_handle, 1]);
+      }
 
       this.start_request(http_handle);
     });

@@ -42,6 +42,13 @@ void http_set_options(CURL* http_handle, const char* json_params, const char* bo
       }
     }
 
+    if (strcmp(key, "_libcurl_insecure") == 0) {
+      if (cJSON_IsTrue(item)) {
+        curl_easy_setopt(http_handle, CURLOPT_SSL_VERIFYPEER, 0L);
+        curl_easy_setopt(http_handle, CURLOPT_SSL_VERIFYHOST, 0L);
+      }
+    }
+
     if (strcmp(key, "method") == 0 && cJSON_IsString(item)) {
       curl_easy_setopt(http_handle, CURLOPT_CUSTOMREQUEST, item->valuestring);
     }
