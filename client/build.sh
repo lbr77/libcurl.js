@@ -2,6 +2,10 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./tools/emscripten-env.sh
+source "$SCRIPT_DIR/tools/emscripten-env.sh"
+
 #path definitions
 OUT_DIR="${OUT_DIR:=out}"
 BUILD_DIR="build"
@@ -19,14 +23,14 @@ COMPILED_FILE="$OUT_DIR/emscripten_compiled.wasm"
 WASM_FILE="$OUT_DIR/libcurl.wasm"
 
 #check last used emscripten version
-CURRENT_EMCC_VER="$(emcc --version)"
-LAST_EMCC_VER="$(cat "$BUILD_DIR/emcc_version.txt" || emcc --version)"
+CURRENT_EMCC_VER="$("$EMCC" --version)"
+LAST_EMCC_VER="$(cat "$BUILD_DIR/emcc_version.txt" || "$EMCC" --version)"
 if [ ! "$CURRENT_EMCC_VER" = "$LAST_EMCC_VER" ]; then
   echo "triggering a full rebuild since we're on a different emcc version"
   rm -rf "$BUILD_DIR"
 fi
 mkdir -p "$BUILD_DIR"
-emcc --version > "$BUILD_DIR/emcc_version.txt"
+"$EMCC" --version > "$BUILD_DIR/emcc_version.txt"
 
 #read exported functions
 EXPORTED_FUNCS=""
@@ -82,7 +86,7 @@ tools/all_deps.sh
 tools/generate_cert.sh
 
 #compile the main c file
-COMPILE_CMD="emcc $C_DIR/*.c $COMPILER_OPTIONS $EMSCRIPTEN_OPTIONS"
+COMPILE_CMD="$EMCC $C_DIR/*.c $COMPILER_OPTIONS $EMSCRIPTEN_OPTIONS"
 echo $COMPILE_CMD
 $COMPILE_CMD
 mv $COMPILED_FILE $WASM_FILE || true

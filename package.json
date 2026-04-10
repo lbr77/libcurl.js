@@ -1,0 +1,35 @@
+{
+  "name": "libcurl.js",
+  "version": "0.7.4",
+  "description": "A workspace-friendly libcurl WebAssembly package with stable src/dist/binary layout.",
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.mjs"
+    },
+    "./bundled": {
+      "types": "./dist/bundled.d.ts",
+      "default": "./dist/bundled.mjs"
+    },
+    "./libcurl.wasm": "./binary/libcurl.wasm",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/**/*",
+    "binary/**/*",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build:binary": "cd client && OUT_DIR=../binary bash ./build.sh all",
+    "build:dist": "bun ./build.mjs",
+    "build": "bun run build:binary && bun run build:dist",
+    "clean": "rm -rf binary dist",
+    "prepack": "bun run build"
+  }
+}

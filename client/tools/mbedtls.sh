@@ -5,6 +5,10 @@
 set -x
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./emscripten-env.sh
+source "$SCRIPT_DIR/emscripten-env.sh"
+
 CORE_COUNT=$(nproc --all)
 PREFIX=$(realpath build/mbedtls-wasm)
 rm -rf $PREFIX
@@ -15,12 +19,14 @@ rm -rf mbedtls
 git clone -b mbedtls-3.6.5 --recursive --depth=1 https://github.com/Mbed-TLS/mbedtls mbedtls
 cd mbedtls
 
-emmake make CFLAGS="-O3" no_test -j$CORE_COUNT
-make DESTDIR="$PREFIX" install
+"$EMMAKE" make -C library CFLAGS="-O3" -j$CORE_COUNT
 
-rm -rf $PREFIX/bin
-rm -rf $PREFIX/share
-rm -rf $PREFIX/lib/pkgconfig
-rm -rf $PREFIX/lib/*.la
+mkdir -p "$PREFIX/include"
+mkdir -p "$PREFIX/lib"
+cp -r include/mbedtls "$PREFIX/include"
+cp -r include/psa "$PREFIX/include"
+cp library/libmbedcrypto.a "$PREFIX/lib"
+cp library/libmbedx509.a "$PREFIX/lib"
+cp library/libmbedtls.a "$PREFIX/lib"
 
 cd ../../

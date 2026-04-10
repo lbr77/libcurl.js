@@ -5,6 +5,10 @@
 set -x
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./emscripten-env.sh
+source "$SCRIPT_DIR/emscripten-env.sh"
+
 CORE_COUNT=$(nproc --all)
 PREFIX=$(realpath build/cjson-wasm)
 mkdir -p $PREFIX
@@ -17,7 +21,7 @@ cd cjson
 sed -i 's/-fstack-protector-strong//' Makefile
 sed -i 's/-fstack-protector//' Makefile
 
-emmake make CC="emcc" static
+"$EMMAKE" make CC="$EMCC" static
 INCLUDE_FILES="cJSON.h cJSON_Utils.h"
 LIB_FILES="libcjson.a libcjson_utils.a"
 

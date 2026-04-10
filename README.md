@@ -48,8 +48,8 @@ This is a port of [libcurl](https://curl.se/libcurl/) to WebAssembly for use in 
 You can build this project by running the following commands:
 ```
 git clone https://github.com/ading2210/libcurl.js --recursive
-cd libcurl.js/client
-./build.sh
+cd libcurl.js
+bun run build
 ```
 Make sure you have emscripten, git, and the various C build tools installed. The only OS supported for building libcurl.js is Linux. On Debian-based systems, you can run the following command to install all the dependencies:
 ```
@@ -57,7 +57,7 @@ sudo apt install python3 make cmake emscripten autoconf automake libtool pkg-con
 ```
 Emscripten versions 3.1.6 and 3.1.72 have been tested and known to work. If you are using Debian 12 or Ubuntu 24.04, Emscripten 3.1.6 is what is provided in the distro's repository. 
 
-The build script will generate `client/out/libcurl.js` as well as `client/out/libcurl.mjs`, which is an ES6 module. You can supply the following arguments to the build script to control the build:
+The workspace package keeps source exports in `src/`, compiled entry files in `dist/`, and generated wasm artifacts in `binary/`. The underlying build still accepts these flags:
 - `release` - Use all optimizations.
 - `single_file` - Include the WASM binary in the outputted JS using base64. 
 - `asan` - Use the Clang AddressSanitizer to catch possible memory bugs during runtime.
@@ -68,7 +68,7 @@ Note: non-release builds will have the `-dev` version suffix and ASan builds wil
 ## Javascript API:
 
 ### Importing the Library:
-To import the library, follow the build instructions in the previous section, and copy `client/out/libcurl.js` and `client/out/libcurl.wasm` to a directory of your choice. After the script is loaded, call `libcurl.load_wasm`, specifying the url of the `libcurl.wasm` file. You do not need to call `libcurl.load_wasm` if you use the `libcurl_full.js` file, as the WASM will be bundled into the JS file.
+To import the library from this workspace package, build it first and consume the package entrypoints from `dist/` with runtime assets in `binary/`. After the script is loaded, call `libcurl.load_wasm`, specifying the url of the `libcurl.wasm` file. You do not need to call `libcurl.load_wasm` if you use the `libcurl_full.js` file, as the WASM will be bundled into the JS file.
 
 ```html
 <script defer src="./out/libcurl.js" onload="libcurl.load_wasm('/out/libcurl.wasm');"></script>

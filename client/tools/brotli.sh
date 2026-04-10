@@ -5,6 +5,10 @@
 set -x
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./emscripten-env.sh
+source "$SCRIPT_DIR/emscripten-env.sh"
+
 CORE_COUNT=$(nproc --all)
 PREFIX=$(realpath build/brotli-wasm)
 
@@ -13,7 +17,7 @@ rm -rf brotli
 git clone -b v1.2.0 --depth=1 https://github.com/google/brotli
 cd brotli
 
-emcmake cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./installed
+"$EMCMAKE" cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./installed
 cmake --build . --config Release --target install
 
 rm -rf $PREFIX

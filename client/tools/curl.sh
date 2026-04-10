@@ -5,6 +5,10 @@
 set -x
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./emscripten-env.sh
+source "$SCRIPT_DIR/emscripten-env.sh"
+
 CORE_COUNT=$(nproc --all)
 PREFIX=$(realpath build/curl-wasm)
 MBEDTLS_PREFIX=$(realpath build/mbedtls-wasm)
@@ -21,7 +25,7 @@ cd curl
 sed -i '/pipe2/d' configure.ac
 
 autoreconf -fi
-emconfigure ./configure --host i686-linux \
+"$EMCONFIGURE" ./configure --host i686-linux \
   --disable-shared --disable-threaded-resolver --without-libpsl \
   --disable-netrc --disable-ipv6 --disable-tftp --disable-ntlm-wb \
   --enable-websockets --disable-ftp --disable-file --disable-gopher \
@@ -30,7 +34,7 @@ emconfigure ./configure --host i686-linux \
   --with-mbedtls=$MBEDTLS_PREFIX --with-zlib=$ZLIB_PREFIX \
   --with-brotli=$BROTLI_PREFIX --with-nghttp2=$NGHTTP2_PREFIX
 
-emmake make -j$CORE_COUNT CFLAGS="-O3" LIBS="-lbrotlicommon"
+"$EMMAKE" make -j$CORE_COUNT CFLAGS="-O3" LIBS="-lbrotlicommon"
 
 rm -rf $PREFIX
 mkdir -p $PREFIX/include
